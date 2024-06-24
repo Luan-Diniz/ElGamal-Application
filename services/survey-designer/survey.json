@@ -1,0 +1,11 @@
+{
+   "TextQuestion1" : [1, "average"],
+   "TextQuestion2" : [2, "text"],
+   "TextQuestion3" : [3, "multiple choice" ,
+        {
+            "a" : ["ChoiceText1", 3],
+            "b" : ["ChoiceText2", 5],
+            "c" : ["ChoiceText3", 7]
+        }
+    ]
+}

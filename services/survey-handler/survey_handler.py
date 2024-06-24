@@ -45,7 +45,7 @@ distribute_survey(survey_example)
 #### END OF RABBITMQ TESTING
 
 
-app.run()
+app.run(port=4997)
 connection.close()
 
 
