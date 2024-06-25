@@ -23,12 +23,13 @@ def get_result():
 
 @app.route('/survey', methods=['POST'])
 def set_survey():
-    #TODO
-    data = request.form
+    survey = request.form
+    distribute_survey(survey)
 
-    print(data)
+    print(survey) # DELETE THIS PRINT, ONLY FOR DEBUGGING!
+    
     return make_response(
-        jsonify({'status': 'working'})  # Make appropriated response.
+        jsonify({'status': 'working'})  # TODO: Make appropriated response.
     )
 
 
@@ -40,8 +41,8 @@ def distribute_survey(survey):
 
 
 # JUST FOR TESTING RABBITMQ
-survey_example = {'hello' : 'a survey will be here'}
-distribute_survey(survey_example)
+#survey_example = {'hello' : 'a survey will be here'}
+#distribute_survey(survey_example)
 #### END OF RABBITMQ TESTING
 
 
