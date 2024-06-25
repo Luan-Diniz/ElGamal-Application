@@ -18,11 +18,16 @@ def callback(ch, method, properties, body):
     channel.stop_consuming()
     
     message = json.loads(body.decode())
-    # store received public keys  (Write the raw dictionary)
+    # Store received public keys  (Write the raw dictionary)
+    # Note that we delete the public keys from the messages,
+    # after writing the files, because it will be send to the front end
+    # to parse the survey.
     with open(ADDITIVE_KEY_PATH, 'w') as additive_public_key:
-        additive_public_key.write(str(message['additive_key']))      
+        additive_public_key.write(str(message['additive_key']))   
+        del message['additive_key']    
     with open(MULTIPLICATIVE_KEY_PATH, 'w') as multiplicative_key:
         multiplicative_key.write(str(message['multiplicative_key']))
+        del message['multiplicative_key']
 
     
     # TEST: read the public key from the file and test if that works. (THIS SHOULD NOT BE HERE, DELETE THIS TEST)
