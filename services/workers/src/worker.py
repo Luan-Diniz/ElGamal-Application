@@ -4,6 +4,7 @@ from os import chdir, getcwd
 from lightphe import LightPHE
 
 app = Flask(__name__)
+#TODO: Create unique id for each worker, so the .key will not be overwritten for diferent workers!
 ADDITIVE_KEY_PATH = 'src/public_keys/additive_public_key.key'
 MULTIPLICATIVE_KEY_PATH = 'src/public_keys/multiplicative_public_key.key'
 
