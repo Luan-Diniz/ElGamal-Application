@@ -1,12 +1,18 @@
-import pika, json
+import pika, json, sys, uuid
 from flask import Flask
 from os import chdir, getcwd
 from lightphe import LightPHE
 
+try:
+    FLASK_PORT = sys.argv[1]
+except IndexError:
+    print('You can pass a arg to worker.py that will configure the PORT that this backend will run on.')
+    FLASK_PORT = 5000   # The default FLASK PORT
+
+UNIQUE_ID = uuid.uuid4()    
+ADDITIVE_KEY_PATH = f'src/public_keys/additive_public_key_{UNIQUE_ID}.key'
+MULTIPLICATIVE_KEY_PATH = f'src/public_keys/multiplicative_public_key_{UNIQUE_ID}.key'
 app = Flask(__name__)
-#TODO: Create unique id for each worker, so the .key will not be overwritten for diferent workers!
-ADDITIVE_KEY_PATH = 'src/public_keys/additive_public_key.key'
-MULTIPLICATIVE_KEY_PATH = 'src/public_keys/multiplicative_public_key.key'
 
 
 #TODO: ENDPOINT TO RECEIVE ANSWER FROM THE FRONTEND.
@@ -66,7 +72,7 @@ def main():
     print('Waiting for messages')
     channel.start_consuming()
 
-    app.run()
+    app.run(port=FLASK_PORT)
 
 
     
