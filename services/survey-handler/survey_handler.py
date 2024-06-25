@@ -5,11 +5,12 @@ import pika, json, threading
 # Initialization
 app = Flask(__name__)
 
+# https://www.rabbitmq.com/tutorials/tutorial-three-python
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='localhost')
 )
 channel = connection.channel()
-channel.queue_declare(queue='survey')
+channel.exchange_declare(exchange='survey', exchange_type='fanout')
 
 # Variables
 result = []  # when use the keyword global in python?
@@ -27,7 +28,7 @@ def set_survey():
     distribute_survey(survey)
 
     print(survey) # DELETE THIS PRINT, ONLY FOR DEBUGGING!
-    
+
     return make_response(
         jsonify({'status': 'working'})  # TODO: Make appropriated response.
     )
@@ -35,8 +36,8 @@ def set_survey():
 
 def distribute_survey(survey):
     message = json.dumps(survey)
-    channel.basic_publish(exchange='',
-                          routing_key='survey',
+    channel.basic_publish(exchange='survey',
+                          routing_key='',
                           body=message)
 
 
