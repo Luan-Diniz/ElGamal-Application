@@ -43,6 +43,8 @@ def distribute_survey(survey):
 
 # JUST FOR TESTING RABBITMQ
 #survey_example = {'hello' : 'a survey will be here'}
+#survey_example['additive_key'] = 'CHAVE PUBLICA ADITIVA AQ'
+#survey_example['multiplicative_key'] = 'CHAVE PUBLICA MULTIPLICATIVA AQ'
 #distribute_survey(survey_example)
 #### END OF RABBITMQ TESTING
 
