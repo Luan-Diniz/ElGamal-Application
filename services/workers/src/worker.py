@@ -1,5 +1,5 @@
 import pika, json, sys, uuid
-from flask import Flask
+from flask import Flask, make_response, jsonify
 from os import chdir, getcwd
 from lightphe import LightPHE
 
@@ -15,9 +15,20 @@ MULTIPLICATIVE_KEY_PATH = f'src/public_keys/multiplicative_public_key_{UNIQUE_ID
 app = Flask(__name__)
 
 
-#TODO: ENDPOINT TO RECEIVE ANSWER FROM THE FRONTEND.
-# SHOULD ENCRYPT AND SEND THE SURVEY ANSWERS TO AN ENDPOINT FROM SURVEY HANDLER
+@app.route('answer', methods=['POST'])
+def get_answer():
+    #TODO: ENDPOINT TO RECEIVE ANSWER FROM THE FRONTEND.
+    # SHOULD ENCRYPT AND SEND THE SURVEY ANSWERS TO AN ENDPOINT FROM SURVEY HANDLER
+    return make_response(
+        jsonify({'status': 'working'})  # TODO: Make appropriated response.
+    )
 
+def send_survey_to_front_end(survey: dict) {
+    return None  # DELETE THIS LINE
+
+    #TODO
+    # Create a POST request to appropriate endpoint at frontend!
+}
 
 
 def callback(ch, method, properties, body):
@@ -36,6 +47,7 @@ def callback(ch, method, properties, body):
         multiplicative_key.write(str(message['multiplicative_key']))
         del message['multiplicative_key']
 
+    send_survey_to_front_end(message)
     
     # TEST: read the public key from the file and test if that works. (THIS SHOULD NOT BE HERE, DELETE THIS TEST)
     #mul_publickey = LightPHE(
@@ -43,11 +55,6 @@ def callback(ch, method, properties, body):
     #add_publickey = LightPHE(
     #    algorithm_name = "Exponential-ElGamal", key_file= MULTIPLICATIVE_KEY_PATH)
     
-    
-    #TODO: Logic of dealing with surveys here.
-    # Send to front end
-        
-        
 
 
 def main():
@@ -76,8 +83,6 @@ def main():
 
 
     
-
-
 
 if __name__ == '__main__':
     try:
