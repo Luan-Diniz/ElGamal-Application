@@ -2,68 +2,70 @@
 import React, { useState } from 'react';
 
 const surveyData = {
-  1: ["Qual a sua nota média?", "average"],
-  2: ["Descreva sua experiência.", "text"],
-  3: ["Qual sua escolha?", "multiple choice", {
-    "a": "Opção 1",
-    "b": "Opção 2",
-    "c": "Opção 3",
-    "d": "Opção 4"
-  }]
+  "Questão 1": [1, "average"],
+  "Questão 2": [2, "text"],
+  "Questão 3": [3, "multiple choice",
+    {
+      "a": ["Escolha 1", 3],
+      "b": ["Escolha 2", 5],
+      "c": ["Escolha 3", 7],
+      "d": ["Escolha 4", 11]
+    }
+  ]
 };
 
 const Survey = () => {
   const [responses, setResponses] = useState({});
 
-  const handleInputChange = (id, value) => {
+  const handleInputChange = (questionKey, value) => {
     setResponses({
       ...responses,
-      [id]: value
+      [questionKey]: value
     });
   };
 
-  const renderQuestion = (id, question, type, choices = null) => {
+  const renderQuestion = (questionKey, [id, type, choices = null]) => {
     switch (type) {
       case 'average':
         return (
           <div key={id}>
-            <label>{question}</label>
+            <label>{questionKey}</label>
             <input
               type="number"
               step="0.1"
-              value={responses[id] || ''}
-              onChange={(e) => handleInputChange(id, e.target.value)}
+              value={responses[questionKey] || ''}
+              onChange={(e) => handleInputChange(questionKey, e.target.value)}
             />
           </div>
         );
       case 'text':
         return (
           <div key={id}>
-            <label>{question}</label>
+            <label>{questionKey}</label>
             <textarea
               rows="5"
               cols="50"
               type="text"
               placeholder="Enter Text..."
-              value={responses[id] || ''}
-              onChange={(e) => handleInputChange(id, e.target.value)}
+              value={responses[questionKey] || ''}
+              onChange={(e) => handleInputChange(questionKey, e.target.value)}
             />
           </div>
         );
       case 'multiple choice':
         return (
           <div key={id}>
-            <label>{question}</label>
-            {Object.entries(choices).map(([key, choice]) => (
+            <label>{questionKey}</label>
+            {Object.entries(choices).map(([key, [choiceText, choiceValue]]) => (
               <div key={key}>
                 <input
                   type="radio"
                   name={`question-${id}`}
-                  value={key}
-                  checked={responses[id] === key}
-                  onChange={() => handleInputChange(id, key)}
+                  value={choiceValue}
+                  checked={responses[questionKey] === choiceValue}
+                  onChange={() => handleInputChange(questionKey, choiceValue)}
                 />
-                {choice}
+                {choiceText}
               </div>
             ))}
           </div>
@@ -75,8 +77,8 @@ const Survey = () => {
 
   return (
     <form>
-      {Object.entries(surveyData).map(([id, [question, type, choices]]) =>
-        renderQuestion(id, question, type, choices)
+      {Object.entries(surveyData).map(([questionKey, questionData]) =>
+        renderQuestion(questionKey, questionData)
       )}
       <button type="button" onClick={() => console.log(responses)}>Submit</button>
     </form>
