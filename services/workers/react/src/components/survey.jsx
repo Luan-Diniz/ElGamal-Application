@@ -1,21 +1,26 @@
-// src/components/Survey.js
-import React, { useState } from 'react';
-
-const surveyData = {
-  "Questão 1": [1, "average"],
-  "Questão 2": [2, "text"],
-  "Questão 3": [3, "multiple choice",
-    {
-      "a": ["Escolha 1", 3],
-      "b": ["Escolha 2", 5],
-      "c": ["Escolha 3", 7],
-      "d": ["Escolha 4", 11]
-    }
-  ]
-};
+import React, { useState, useEffect } from 'react';
 
 const Survey = () => {
+  const [surveyData, setSurveyData] = useState(null);
   const [responses, setResponses] = useState({});
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/answer_form'); // Fetch data from Flask endpoint
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const jsonData = await response.json(); // Parse JSON response
+      console.log('Response JSON data:', jsonData); // Log the JSON data
+      setSurveyData(jsonData); // Set surveyData state with fetched JSON data
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const handleInputChange = (questionKey, value) => {
     setResponses({
@@ -25,6 +30,7 @@ const Survey = () => {
   };
 
   const handleSubmit = () => {
+    // Adjust submission logic based on your requirements
     const formattedResponses = {};
     Object.entries(surveyData).forEach(([questionKey, [id]]) => {
       formattedResponses[`${id}`] = responses[questionKey];
@@ -93,12 +99,15 @@ const Survey = () => {
     }
   };
 
+  if (!surveyData) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <form>
       {Object.entries(surveyData).map(([questionKey, questionData]) =>
         renderQuestion(questionKey, questionData)
       )}
-      <h3></h3>
       <button type="button" onClick={handleSubmit}>Submit</button>
     </form>
   );

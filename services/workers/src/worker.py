@@ -1,5 +1,6 @@
 import pika, json, sys, uuid
 from flask import Flask, make_response, jsonify
+from flask_cors import CORS
 from os import chdir, getcwd
 from lightphe import LightPHE
 
@@ -10,12 +11,13 @@ except IndexError:
     FLASK_PORT = 5000   # The default FLASK PORT
 
 UNIQUE_ID = uuid.uuid4()    
-ADDITIVE_KEY_PATH = f'src/public_keys/additive_public_key_{UNIQUE_ID}.key'
-MULTIPLICATIVE_KEY_PATH = f'src/public_keys/multiplicative_public_key_{UNIQUE_ID}.key'
+ADDITIVE_KEY_PATH = f'public_keys/additive_public_key_{UNIQUE_ID}.key'
+MULTIPLICATIVE_KEY_PATH = f'public_keys/multiplicative_public_key_{UNIQUE_ID}.key'
 app = Flask(__name__)
+CORS(app)
 
 
-@app.route('answer', methods=['POST'])
+@app.route('/answer', methods=['POST'])
 def get_answer():
     #TODO: ENDPOINT TO RECEIVE ANSWER FROM THE FRONTEND.
     # SHOULD ENCRYPT AND SEND THE SURVEY ANSWERS TO AN ENDPOINT FROM SURVEY HANDLER
@@ -23,12 +25,18 @@ def get_answer():
         jsonify({'status': 'working'})  # TODO: Make appropriated response.
     )
 
-def send_survey_to_front_end(survey: dict) {
-    return None  # DELETE THIS LINE
 
+
+def send_survey_to_front_end(survey: dict):
+    global form_questions
+    form_questions = survey
+    print(survey)
     #TODO
     # Create a POST request to appropriate endpoint at frontend!
-}
+
+@app.route('/answer_form', methods=['GET'])
+def get_form():
+    return form_questions
 
 
 def callback(ch, method, properties, body):
@@ -36,6 +44,7 @@ def callback(ch, method, properties, body):
     channel.stop_consuming()
     
     message = json.loads(body.decode())
+    print(message)
     # Store received public keys  (Write the raw dictionary)
     # Note that we delete the public keys from the messages,
     # after writing the files, because it will be send to the front end

@@ -46,9 +46,10 @@ if (input('You want to send the survey? y/n\n') not in ['y', 'yes']):
     exit_program()
 
 print('Sending survey...')
+print(survey)
 try:
     response = requests.post(
-            URL_SURVEY_HANDLER + ENDPOINT_SEND_SURVEY, survey)
+            URL_SURVEY_HANDLER + ENDPOINT_SEND_SURVEY, json=survey)
     if response.status_code == 200:
         data = response.json()
         print("Response data: ", data)

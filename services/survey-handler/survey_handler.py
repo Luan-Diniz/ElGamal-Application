@@ -24,10 +24,10 @@ def get_result():
 
 @app.route('/survey', methods=['POST'])
 def set_survey():
-    survey = request.form
+    survey = request.get_json()
+    print(survey)
     distribute_survey(survey)
 
-    print(survey) # DELETE THIS PRINT, ONLY FOR DEBUGGING!
 
     return make_response(
         jsonify({'status': 'working'})  # TODO: Make appropriated response.
@@ -35,6 +35,7 @@ def set_survey():
 
 
 def distribute_survey(survey):
+    print(survey)
     message = json.dumps(survey)
     channel.basic_publish(exchange='survey',
                           routing_key='',
