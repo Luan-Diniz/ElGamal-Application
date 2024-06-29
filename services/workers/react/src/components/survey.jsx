@@ -51,6 +51,7 @@ const Survey = () => {
             <input
               type="number"
               step="0.1"
+              placeholder="Digite o valor..."
               value={responses[questionKey] || ''}
               onChange={(e) => handleInputChange(questionKey, e.target.value)}
             />
@@ -64,7 +65,7 @@ const Survey = () => {
               rows="5"
               cols="50"
               type="text"
-              placeholder="Enter Text..."
+              placeholder="Digite o texto..."
               value={responses[questionKey] || ''}
               onChange={(e) => handleInputChange(questionKey, e.target.value)}
             />
