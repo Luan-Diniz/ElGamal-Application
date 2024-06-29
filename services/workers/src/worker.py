@@ -28,11 +28,11 @@ def get_answer():
     )
 
 def send_answer_to_survey_handler(answer: dict):
-    encrypted_answers = {}
-
     #TODO
     # Encrypts the answers and send it to SurveyHandler Endpoint.
     print(f"MESSAGE IS: {message}")
+
+    encrypted_answers = message  # = message JUST FOR TESTING
     for id_question in answer.keys():
         for key in message.keys():
             if str(message[key][0]) == id_question:
@@ -64,8 +64,7 @@ def send_answer_to_survey_handler(answer: dict):
  
 
 def send_survey_to_front_end(survey: dict):
-    return None  # DELETE THIS LINE
-
+    pass
     #TODO
     # Create a POST request to appropriate endpoint at frontend!
 
