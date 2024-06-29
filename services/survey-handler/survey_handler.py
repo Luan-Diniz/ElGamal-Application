@@ -22,6 +22,20 @@ def get_result():
     # Should return the results of the survey
     return None
 
+@app.route('/answer', methods=['POST'])
+def receive_answer():
+
+    answer = request.form
+    print(answer) # DELETE THIS PRINT, ONLY FOR DEBUGGING!
+    #TODO: 
+    # This endpoint receives the encrypted answers from the workers.
+    # It must store that answer in a "result" dictionary.
+
+
+    return make_response(
+        jsonify({'status': 'working'})  # TODO: Make appropriated response.
+    )    
+
 @app.route('/survey', methods=['POST'])
 def set_survey():
     survey = request.form

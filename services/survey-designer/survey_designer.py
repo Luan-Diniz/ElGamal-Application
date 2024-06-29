@@ -61,14 +61,19 @@ except requests.exceptions.RequestException as e:
     exit_program()
 
 
+if (input('You want the results? y/n\n') not in ['y', 'yes']):
+    exit_program()
 
-print('Want the result?')
 '''
 TODO:
     Request asking for results.
     Decrypt and parse the data received.
     Show the results.
 '''
+
+response = requests.get(
+    URL_SURVEY_HANDLER + ENDPOINT_GET_RESULT
+)  #TODO: Handle errors.
 
 
 

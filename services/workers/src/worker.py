@@ -1,4 +1,4 @@
-import pika, json, sys, uuid
+import pika, json, sys, uuid, requests
 from flask import Flask, make_response, jsonify
 from os import chdir, getcwd
 from lightphe import LightPHE
@@ -12,6 +12,7 @@ except IndexError:
 UNIQUE_ID = uuid.uuid4()    
 ADDITIVE_KEY_PATH = f'src/public_keys/additive_public_key_{UNIQUE_ID}.key'
 MULTIPLICATIVE_KEY_PATH = f'src/public_keys/multiplicative_public_key_{UNIQUE_ID}.key'
+ENDPOINT_SURVEY_HANDLER = 'http://localhost:4997/answer'
 app = Flask(__name__)
 
 
@@ -23,12 +24,23 @@ def get_answer():
         jsonify({'status': 'working'})  # TODO: Make appropriated response.
     )
 
-def send_survey_to_front_end(survey: dict) {
+def send_answer_to_survey_handler():
+    encrypted_answers = {}
+
+    #TODO
+    # Encrypts the answers and send it to SurveyHandler Endpoint.
+
+    response = requests.post(
+        ENDPOINT_SURVEY_HANDLER, encrypted_answers 
+    )
+    # TODO: Handler response fails and error codes.
+ 
+
+def send_survey_to_front_end(survey: dict):
     return None  # DELETE THIS LINE
 
     #TODO
     # Create a POST request to appropriate endpoint at frontend!
-}
 
 
 def callback(ch, method, properties, body):
