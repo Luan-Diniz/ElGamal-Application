@@ -20,4 +20,5 @@ if response.status_code == 200:
         data = response.json()
         print("Response data: ", data)
 else:
-    print("ALGUM ERRO OCORREU NO ENVIO DAS RESPOSTAS.")
+    print(f"Request failed with status code: {response.status_code}\n")
+    exit()

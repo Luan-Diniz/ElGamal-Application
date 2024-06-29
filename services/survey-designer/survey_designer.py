@@ -48,7 +48,7 @@ if (input('You want to send the survey? y/n\n') not in ['y', 'yes']):
 print('Sending survey...')
 try:
     response = requests.post(
-            URL_SURVEY_HANDLER + ENDPOINT_SEND_SURVEY, survey)
+            URL_SURVEY_HANDLER + ENDPOINT_SEND_SURVEY, json=survey)
     if response.status_code == 200:
         data = response.json()
         print("Response data: ", data)
@@ -66,14 +66,19 @@ if (input('You want the results? y/n\n') not in ['y', 'yes']):
 
 '''
 TODO:
-    Request asking for results.
     Decrypt and parse the data received.
     Show the results.
 '''
-
 response = requests.get(
     URL_SURVEY_HANDLER + ENDPOINT_GET_RESULT
-)  #TODO: Handle errors.
+)
+if response.status_code == 200:
+    data = response.json()
+    print("Response data: ", data)
+else:
+    print(f"Request failed with status code: {response.status_code}\n")
+    exit_program()
+
 
 
 

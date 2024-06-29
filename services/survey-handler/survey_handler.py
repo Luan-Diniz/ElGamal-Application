@@ -38,9 +38,10 @@ def receive_answer():
 
 @app.route('/survey', methods=['POST'])
 def set_survey():
-    survey = request.form
+    survey = request.get_json()
     distribute_survey(survey)
 
+    print(type(survey))
     print(survey) # DELETE THIS PRINT, ONLY FOR DEBUGGING!
 
     return make_response(
@@ -52,8 +53,7 @@ def distribute_survey(survey):
     message = json.dumps(survey)
     channel.basic_publish(exchange='survey',
                           routing_key='',
-                          body=message)
-
+                          body=message) 
 
 # JUST FOR TESTING RABBITMQ
 #survey_example = {'hello' : 'a survey will be here'}

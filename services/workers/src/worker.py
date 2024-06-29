@@ -1,5 +1,5 @@
 import pika, json, sys, uuid, requests
-from flask import Flask, make_response, jsonify
+from flask import Flask, make_response, jsonify, request
 from os import chdir, getcwd
 from lightphe import LightPHE
 
@@ -16,24 +16,50 @@ ENDPOINT_SURVEY_HANDLER = 'http://localhost:4997/answer'
 app = Flask(__name__)
 
 
-@app.route('answer', methods=['POST'])
+@app.route('/answer', methods=['POST'])
 def get_answer():
-    #TODO: ENDPOINT TO RECEIVE ANSWER FROM THE FRONTEND.
-    # SHOULD ENCRYPT AND SEND THE SURVEY ANSWERS TO AN ENDPOINT FROM SURVEY HANDLER
+    answer = request.form.to_dict()
+    send_answer_to_survey_handler(answer)
+
     return make_response(
         jsonify({'status': 'working'})  # TODO: Make appropriated response.
     )
 
-def send_answer_to_survey_handler():
+def send_answer_to_survey_handler(answer: dict):
     encrypted_answers = {}
 
     #TODO
     # Encrypts the answers and send it to SurveyHandler Endpoint.
+    print(f"MESSAGE IS: {message}")
+    for id_question in answer.keys():
+        for key in message.keys():
+            if str(message[key][0]) == id_question:
+                '''
+                if (message[key][1]) == "average":
+                    pass
+                elif (message[key][1] == "multiple choice"):
+                    pass
+                elif (message[key][1] == "text"):
+                    pass
+                else:
+                    # Maybe raise an error here.
+                    # This else SHOULD NOT be executed!
+                    pass
+                '''    
+                answer[id_question] = "" #ENCRIPTED ANSWER HERE.
+                print(f"Achou! id_question: {id_question}, key message: {key}, value: {message[key]}")
+                break
 
     response = requests.post(
         ENDPOINT_SURVEY_HANDLER, encrypted_answers 
     )
-    # TODO: Handler response fails and error codes.
+    if response.status_code == 200:
+        data = response.json()
+        print("Response data: ", data)
+    else:
+        print(f"Request failed with status code: {response.status_code}\n")
+        print('Exiting program...')
+        exit()
  
 
 def send_survey_to_front_end(survey: dict):
@@ -44,10 +70,11 @@ def send_survey_to_front_end(survey: dict):
 
 
 def callback(ch, method, properties, body):
-    print(f"Received message: {body}")
+    global message
+
     channel.stop_consuming()
-    
-    message = json.loads(body.decode())
+    message = json.loads(body.decode('utf-8'))  # Returns a dict.
+    print(f"Received message: {message}")
     # Store received public keys  (Write the raw dictionary)
     # Note that we delete the public keys from the messages,
     # after writing the files, because it will be send to the front end
