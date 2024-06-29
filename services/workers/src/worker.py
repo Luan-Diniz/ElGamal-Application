@@ -1,5 +1,6 @@
 import pika, json, sys, uuid, requests
 from flask import Flask, make_response, jsonify, request
+from flask_cors import CORS
 from os import chdir, getcwd
 from lightphe import LightPHE
 
@@ -14,6 +15,7 @@ ADDITIVE_KEY_PATH = f'src/public_keys/additive_public_key_{UNIQUE_ID}.key'
 MULTIPLICATIVE_KEY_PATH = f'src/public_keys/multiplicative_public_key_{UNIQUE_ID}.key'
 ENDPOINT_SURVEY_HANDLER = 'http://localhost:4997/answer'
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/answer', methods=['POST'])
@@ -34,7 +36,6 @@ def send_answer_to_survey_handler(answer: dict):
     for id_question in answer.keys():
         for key in message.keys():
             if str(message[key][0]) == id_question:
-                '''
                 if (message[key][1]) == "average":
                     pass
                 elif (message[key][1] == "multiple choice"):
@@ -45,13 +46,13 @@ def send_answer_to_survey_handler(answer: dict):
                     # Maybe raise an error here.
                     # This else SHOULD NOT be executed!
                     pass
-                '''    
+                    
                 answer[id_question] = "" #ENCRIPTED ANSWER HERE.
                 print(f"Achou! id_question: {id_question}, key message: {key}, value: {message[key]}")
                 break
 
     response = requests.post(
-        ENDPOINT_SURVEY_HANDLER, encrypted_answers 
+        ENDPOINT_SURVEY_HANDLER, json=encrypted_answers 
     )
     if response.status_code == 200:
         data = response.json()

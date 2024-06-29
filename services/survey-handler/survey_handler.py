@@ -24,8 +24,7 @@ def get_result():
 
 @app.route('/answer', methods=['POST'])
 def receive_answer():
-
-    answer = request.form
+    answer = request.get_json()
     print(answer) # DELETE THIS PRINT, ONLY FOR DEBUGGING!
     #TODO: 
     # This endpoint receives the encrypted answers from the workers.
