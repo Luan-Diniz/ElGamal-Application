@@ -24,12 +24,30 @@ const Survey = () => {
     });
   };
 
+  const handleSubmit = () => {
+    const formattedResponses = {};
+    Object.entries(surveyData).forEach(([questionKey, [id]]) => {
+      formattedResponses[`${id}`] = responses[questionKey];
+    });
+
+    const jsonContent = JSON.stringify(formattedResponses, null, 2);
+
+    // Create a blob and trigger a download
+    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'responses.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const renderQuestion = (questionKey, [id, type, choices = null]) => {
     switch (type) {
       case 'average':
         return (
           <div key={id}>
-            <label>{questionKey}</label>
+            <h3>{questionKey}</h3>
             <input
               type="number"
               step="0.1"
@@ -41,7 +59,7 @@ const Survey = () => {
       case 'text':
         return (
           <div key={id}>
-            <label>{questionKey}</label>
+            <h3>{questionKey}</h3>
             <textarea
               rows="5"
               cols="50"
@@ -55,7 +73,7 @@ const Survey = () => {
       case 'multiple choice':
         return (
           <div key={id}>
-            <label>{questionKey}</label>
+            <h3>{questionKey}</h3>
             {Object.entries(choices).map(([key, [choiceText, choiceValue]]) => (
               <div key={key}>
                 <input
@@ -80,7 +98,8 @@ const Survey = () => {
       {Object.entries(surveyData).map(([questionKey, questionData]) =>
         renderQuestion(questionKey, questionData)
       )}
-      <button type="button" onClick={() => console.log(responses)}>Submit</button>
+      <h3></h3>
+      <button type="button" onClick={handleSubmit}>Submit</button>
     </form>
   );
 };
