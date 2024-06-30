@@ -1,21 +1,25 @@
-// src/components/Survey.js
-import React, { useState } from 'react';
-
-const surveyData = {
-  "Questão 1": [1, "average"],
-  "Questão 2": [2, "text"],
-  "Questão 3": [3, "multiple choice",
-    {
-      "a": ["Escolha 1", 3],
-      "b": ["Escolha 2", 5],
-      "c": ["Escolha 3", 7],
-      "d": ["Escolha 4", 11]
-    }
-  ]
-};
+import React, { useState, useEffect } from 'react';
 
 const Survey = () => {
+  const [surveyData, setSurveyData] = useState(null);
   const [responses, setResponses] = useState({});
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/answer_form');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const jsonData = await response.json();
+      setSurveyData(jsonData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const handleInputChange = (questionKey, value) => {
     setResponses({
@@ -24,22 +28,25 @@ const Survey = () => {
     });
   };
 
-  const handleSubmit = () => {
-    const formattedResponses = {};
-    Object.entries(surveyData).forEach(([questionKey, [id]]) => {
-      formattedResponses[`${id}`] = responses[questionKey];
-    });
-
-    const jsonContent = JSON.stringify(formattedResponses, null, 2);
-
-    // Create a blob and trigger a download
-    const blob = new Blob([jsonContent], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'responses.json';
-    a.click();
-    URL.revokeObjectURL(url);
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/answer_form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(responses),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const responseData = await response.json();
+      console.log('Response from backend:', responseData);
+      alert('Responses submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting responses:', error);
+      alert('Error submitting responses');
+    }
   };
 
   const renderQuestion = (questionKey, [id, type, choices = null]) => {
@@ -93,6 +100,10 @@ const Survey = () => {
         return null;
     }
   };
+
+  if (!surveyData) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <form>
