@@ -4,10 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:port1": "vite --port 5171",
-    "dev:port2": "vite --port 5172",
-    "dev:port3": "vite --port 5173",
+    "dev": "node start-multiple-ports.js",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
