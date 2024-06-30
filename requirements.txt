@@ -1,4 +1,5 @@
 lightphe==0.0.7
 flask
+flask_cors
 pika
 requests
