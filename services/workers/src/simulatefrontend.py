@@ -7,7 +7,7 @@ except IndexError:
     FLASK_PORT = 5000   # The default FLASK PORT
 
 
-ENDPOINT_WORKER = f"http://localhost:{FLASK_PORT}/answer"
+ENDPOINT_WORKER = f"http://localhost:{FLASK_PORT}/answer_form"
 
 sample_result = {
     "1": 30, 

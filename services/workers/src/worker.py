@@ -18,14 +18,16 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/answer', methods=['POST'])
+@app.route('/answer_form', methods=['GET','POST'])
 def get_answer():
-    answer = request.form.to_dict()
-    send_answer_to_survey_handler(answer)
-
-    return make_response(
-        jsonify({'status': 'working'})
-    )
+    if request.method == 'GET':
+        return jsonify(message)
+    
+    elif request.method == 'POST':
+        answer = request.form.to_dict()
+        send_answer_to_survey_handler(answer)
+        return jsonify({'status': 'working'})
+        
 
 def send_answer_to_survey_handler(answer: dict):
     # Encrypts the answers and send it to SurveyHandler Endpoint.
@@ -64,13 +66,6 @@ def send_answer_to_survey_handler(answer: dict):
         print(f"Request failed with status code: {response.status_code}\n")
         print('Exiting program...')
         exit()
- 
-
-def send_survey_to_front_end(survey: dict):
-    pass
-    #TODO
-    # Create a POST request to appropriate endpoint at frontend!
-
 
 def callback(ch, method, properties, body):
     global message
@@ -88,8 +83,6 @@ def callback(ch, method, properties, body):
     with open(MULTIPLICATIVE_KEY_PATH, 'w') as multiplicative_key:
         multiplicative_key.write(str(message['multiplicative_key']))
         del message['multiplicative_key']
-
-    send_survey_to_front_end(message)
 
 
 def main():
