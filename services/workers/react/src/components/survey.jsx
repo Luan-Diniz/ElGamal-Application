@@ -21,10 +21,10 @@ const Survey = () => {
     }
   };
 
-  const handleInputChange = (questionKey, value) => {
+  const handleInputChange = (questionId, value) => {
     setResponses({
       ...responses,
-      [questionKey]: value
+      [questionId]: value
     });
   };
 
@@ -59,8 +59,8 @@ const Survey = () => {
               type="number"
               step="0.1"
               placeholder="Digite o valor..."
-              value={responses[questionKey] || ''}
-              onChange={(e) => handleInputChange(questionKey, e.target.value)}
+              value={responses[id] || ''}
+              onChange={(e) => handleInputChange(id, e.target.value)}
             />
           </div>
         );
@@ -73,8 +73,8 @@ const Survey = () => {
               cols="50"
               type="text"
               placeholder="Digite o texto..."
-              value={responses[questionKey] || ''}
-              onChange={(e) => handleInputChange(questionKey, e.target.value)}
+              value={responses[id] || ''}
+              onChange={(e) => handleInputChange(id, e.target.value)}
             />
           </div>
         );
@@ -88,8 +88,8 @@ const Survey = () => {
                   type="radio"
                   name={`question-${id}`}
                   value={choiceValue}
-                  checked={responses[questionKey] === choiceValue}
-                  onChange={() => handleInputChange(questionKey, choiceValue)}
+                  checked={responses[id] === choiceValue}
+                  onChange={() => handleInputChange(id, choiceValue)}
                 />
                 {choiceText}
               </div>
