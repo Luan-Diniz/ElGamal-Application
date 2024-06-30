@@ -24,7 +24,7 @@ def get_answer():
         return jsonify(message)
     
     elif request.method == 'POST':
-        answer = request.form.to_dict()
+        answer = request.json
         send_answer_to_survey_handler(answer)
         return jsonify({'status': 'working'})
         
