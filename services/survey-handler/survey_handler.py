@@ -19,16 +19,16 @@ result = {}
 @app.route('/result', methods=['GET'])
 def get_result():
     #TODO
-    # Should return the results of the survey
-    # TODO: Shuffle the strings!
-    # Serialize the answers again!
+    # Should return the results of the survey.
+    # Should serialize and convert to base64 all Ciphertexts
+    # Should shuffle all answers with [str].
+    # Should clean the result variable.
     return None
 
 @app.route('/answer', methods=['POST'])
 def receive_answer():
     answer = request.get_json()
  
-    # print(answer) 
     # This endpoint receives the encrypted answers from the workers.
     # It must store that answer in a "result" dictionary.
     for key in answer.keys():
@@ -54,7 +54,6 @@ def receive_answer():
             else:
                 assert False, "This else SHOULD'NT be executed!"
 
-    print(result) #DELETE THIS
     return make_response(
         jsonify({'status': 'working'})  
     )    
