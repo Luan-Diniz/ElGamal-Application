@@ -10,13 +10,12 @@ const Survey = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:5000/answer_form'); // Fetch data from Flask endpoint
+      const response = await fetch('http://localhost:5000/answer_form');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const jsonData = await response.json(); // Parse JSON response
-      console.log('Response JSON data:', jsonData); // Log the JSON data
-      setSurveyData(jsonData); // Set surveyData state with fetched JSON data
+      const jsonData = await response.json();
+      setSurveyData(jsonData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -29,23 +28,25 @@ const Survey = () => {
     });
   };
 
-  const handleSubmit = () => {
-    // Adjust submission logic based on your requirements
-    const formattedResponses = {};
-    Object.entries(surveyData).forEach(([questionKey, [id]]) => {
-      formattedResponses[`${id}`] = responses[questionKey];
-    });
-
-    const jsonContent = JSON.stringify(formattedResponses, null, 2);
-
-    // Create a blob and trigger a download
-    const blob = new Blob([jsonContent], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'responses.json';
-    a.click();
-    URL.revokeObjectURL(url);
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/answer_form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(responses),
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const responseData = await response.json();
+      console.log('Response from backend:', responseData);
+      alert('Responses submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting responses:', error);
+      alert('Error submitting responses');
+    }
   };
 
   const renderQuestion = (questionKey, [id, type, choices = null]) => {

@@ -1,5 +1,5 @@
 import pika, json, sys, uuid
-from flask import Flask, make_response, jsonify
+from flask import Flask, make_response, jsonify, request
 from flask_cors import CORS
 from os import chdir, getcwd
 from lightphe import LightPHE
@@ -34,10 +34,15 @@ def send_survey_to_front_end(survey: dict):
     #TODO
     # Create a POST request to appropriate endpoint at frontend!
 
-@app.route('/answer_form', methods=['GET'])
-def get_form():
-    return form_questions
-
+@app.route('/answer_form', methods=['GET', 'POST'])
+def handle_form():
+    if request.method == 'GET':
+        return jsonify(form_questions)
+    elif request.method == 'POST':
+        data = request.json
+        # Here you can process the received responses (data) as needed
+        print('Received responses:', data)
+        return jsonify({'message': 'Responses received successfully'})
 
 def callback(ch, method, properties, body):
     print(f"Received message: {body}")
