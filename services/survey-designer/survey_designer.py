@@ -1,4 +1,4 @@
-import json, requests
+import json, requests, base64, pickle
 from os import getcwd, chdir 
 from lightphe import LightPHE
 
@@ -39,10 +39,8 @@ with open('survey.json', 'r') as json_file:
     with open(MULTIPLICATIVE_KEY_PATH, 'r') as multiplicative_key_file:
         survey['multiplicative_key'] = multiplicative_key_file.read()
 
-# For debugging, prints the json in a "fancy" way.
-#print(json.dumps(survey, indent=4)) 
 
-if (input('You want to send the survey? y/n\n') not in ['y', 'yes']):
+if (input('You want to send the survey? y/n\n').lower() not in ['y', 'yes']):
     exit_program()
 
 print('Sending survey...')
@@ -61,14 +59,9 @@ except requests.exceptions.RequestException as e:
     exit_program()
 
 
-if (input('You want the results? y/n\n') not in ['y', 'yes']):
+if (input('You want the results? y/n\n').lower() not in ['y', 'yes']):
     exit_program()
 
-'''
-TODO:
-    Decrypt and parse the data received.
-    Show the results.
-'''
 response = requests.get(
     URL_SURVEY_HANDLER + ENDPOINT_GET_RESULT
 )
@@ -79,6 +72,39 @@ else:
     print(f"Request failed with status code: {response.status_code}\n")
     exit_program()
 
+number_answers = data['number answers']
+del data['number answers']
 
+# Deserialize ciphertexts.
+for id_question in data.keys():
+    if type(data[id_question]) != list:
+        data[id_question] = pickle.loads(base64.b64decode(data[id_question]))
 
+# Decrypt ciphertext and show results.
+print()
+print("----------SURVEY RESULTS----------")
+for id_question in data.keys():
+    for question in survey.keys():
+        if survey[question][0] == int(id_question):
+            if survey[question][1] == "average":
+                answer = additive_keys.decrypt(data[id_question])/number_answers
 
+                print(question)
+                print(f"Average answer: {answer}")
+                print()
+
+            elif survey[question][1] == "text":
+                print(question)
+                print("Answers: ")
+                for answer in data[id_question]:
+                    print(f"\t{answer}")
+
+            elif survey[question][1] == "multiple choice":
+                number_to_be_factored = multiplicative_keys.decrypt(data[id_question])
+                #TODO: Factorize the number, count its primes factors,
+                # and relate them with the prime numbers described in the 
+                # multiple-choice question alternatives of a survey.
+                
+            else:
+                assert False, "This else SHOULD'NT be executed!"
+print("----------END OF SURVEY----------")

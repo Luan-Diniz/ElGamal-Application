@@ -1,6 +1,13 @@
-import requests
+import requests, sys
 
-ENDPOINT_WORKER = "http://localhost:5000/answer"
+try:
+    FLASK_PORT = sys.argv[1]
+except IndexError:
+    print('You can pass a arg to simulatefrontend.py that will configure the PORT of the backend endpoint.')
+    FLASK_PORT = 5000   # The default FLASK PORT
+
+
+ENDPOINT_WORKER = f"http://localhost:{FLASK_PORT}/answer"
 
 sample_result = {
     "1": 30, 
