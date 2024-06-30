@@ -15,6 +15,7 @@ channel.exchange_declare(exchange='survey', exchange_type='fanout')
 
 # Variables
 result = {}
+number_answers = 0
 
 
 @app.route('/result', methods=['GET'])
@@ -33,16 +34,18 @@ def get_result():
             serialized_results[key] = base64.b64encode(
                         pickle.dumps(result[key])).decode('utf-8')
     result.clear()
+    serialized_results['number answers'] = number_answers
     return make_response(
         jsonify(serialized_results)
     )
 
+# This endpoint receives the encrypted answers from the workers.
 @app.route('/answer', methods=['POST'])
 def receive_answer():
+    global number_answers
     answer = request.get_json()
     print(answer)
-    # This endpoint receives the encrypted answers from the workers.
-    # It must store that answer in a "result" dictionary.
+
     for key in answer.keys():
         if answer[key][1] == "text":
             try:
@@ -65,6 +68,7 @@ def receive_answer():
                     result[key] = ciphertext
             else:
                 assert False, "This else SHOULD'NT be executed!"
+    number_answers += 1
 
     return make_response(
         jsonify({'status': 'working'})  
