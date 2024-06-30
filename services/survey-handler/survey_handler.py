@@ -1,5 +1,6 @@
 import pika, json, base64, pickle
 from flask import Flask, jsonify, request, make_response
+from random import sample
 
 
 # Initialization
@@ -18,25 +19,36 @@ result = {}
 
 @app.route('/result', methods=['GET'])
 def get_result():
-    #TODO
     # Should return the results of the survey.
     # Should serialize and convert to base64 all Ciphertexts
     # Should shuffle all answers with [str].
     # Should clean the result variable.
-    return None
+    
+    serialized_results = {}
+    for key in result.keys():
+        if type(result[key]) == list:
+            serialized_results[key] = sample(
+                result[key], k = len(result[key]))  # Shuffles
+        else:
+            serialized_results[key] = base64.b64encode(
+                        pickle.dumps(result[key])).decode('utf-8')
+    result.clear()
+    return make_response(
+        jsonify(serialized_results)
+    )
 
 @app.route('/answer', methods=['POST'])
 def receive_answer():
     answer = request.get_json()
- 
+    print(answer)
     # This endpoint receives the encrypted answers from the workers.
     # It must store that answer in a "result" dictionary.
     for key in answer.keys():
         if answer[key][1] == "text":
             try:
-                result[key].append([answer[key][0]])
+                result[key].append(answer[key][0])
             except KeyError:
-                result[key] = [answer[key[0]]]
+                result[key] = [answer[key][0]]
         else: 
             ciphertext = answer[key][0]
             ciphertext = pickle.loads(base64.b64decode(ciphertext))
