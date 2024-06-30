@@ -2,6 +2,8 @@ import json, requests, base64, pickle
 from os import getcwd, chdir 
 from lightphe import LightPHE
 
+from find_factors import factorize
+
 
 URL_SURVEY_HANDLER = 'http://localhost:4997'
 ENDPOINT_SEND_SURVEY = '/survey'
@@ -98,13 +100,23 @@ for id_question in data.keys():
                 print("Answers: ")
                 for answer in data[id_question]:
                     print(f"\t{answer}")
+                print()
 
             elif survey[question][1] == "multiple choice":
                 number_to_be_factored = multiplicative_keys.decrypt(data[id_question])
-                #TODO: Factorize the number, count its primes factors,
-                # and relate them with the prime numbers described in the 
-                # multiple-choice question alternatives of a survey.
-                
+                prime_factors = factorize(number_to_be_factored)
+
+                print(question)
+                print("Alternatives: ")
+                alternatives = survey[question][2] 
+                for alternative in alternatives.keys():
+                    print(f"{alternative}: {alternatives[alternative][0]}")
+                    if alternatives[alternative][1] not in prime_factors.keys():
+                        times_it_was_chosen = 0
+                    else:
+                        times_it_was_chosen = prime_factors[alternatives[alternative][1]]
+                    print(f"\t The alternative above was chosen {times_it_was_chosen} times.")
+                print()
             else:
                 assert False, "This else SHOULD'NT be executed!"
 print("----------END OF SURVEY----------")
