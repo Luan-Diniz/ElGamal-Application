@@ -1,4 +1,4 @@
-import pika, json, sys, uuid, requests
+import pika, json, sys, uuid, requests, pickle, base64
 from flask import Flask, make_response, jsonify, request
 from flask_cors import CORS
 from os import chdir, getcwd
@@ -24,31 +24,34 @@ def get_answer():
     send_answer_to_survey_handler(answer)
 
     return make_response(
-        jsonify({'status': 'working'})  # TODO: Make appropriated response.
+        jsonify({'status': 'working'})
     )
 
 def send_answer_to_survey_handler(answer: dict):
-    #TODO
     # Encrypts the answers and send it to SurveyHandler Endpoint.
-    print(f"MESSAGE IS: {message}")
+    encrypted_answers = {}
 
-    encrypted_answers = message  # = message JUST FOR TESTING
+    additive_publickey = LightPHE(
+        algorithm_name = "Exponential-ElGamal", key_file= ADDITIVE_KEY_PATH)
+    mulplicative_publickey = LightPHE(
+       algorithm_name = "ElGamal", key_file= MULTIPLICATIVE_KEY_PATH)
+
+
     for id_question in answer.keys():
         for key in message.keys():
             if str(message[key][0]) == id_question:
                 if (message[key][1]) == "average":
-                    pass
+                    ciphertext = additive_publickey.encrypt(int(answer[id_question]))
+                    encrypted_answers[id_question] = base64.b64encode(
+                        pickle.dumps(ciphertext)).decode('utf-8')
                 elif (message[key][1] == "multiple choice"):
-                    pass
+                    ciphertext = mulplicative_publickey.encrypt(int(answer[id_question]))
+                    encrypted_answers[id_question] = base64.b64encode(
+                        pickle.dumps(ciphertext)).decode('utf-8')
                 elif (message[key][1] == "text"):
-                    pass
+                    encrypted_answers[id_question] = answer[id_question]  
                 else:
-                    # Maybe raise an error here.
-                    # This else SHOULD NOT be executed!
-                    pass
-                    
-                answer[id_question] = "" #ENCRIPTED ANSWER HERE.
-                print(f"Achou! id_question: {id_question}, key message: {key}, value: {message[key]}")
+                    assert False, "This else SHOULD'NT be executed!"
                 break
 
     response = requests.post(
@@ -87,13 +90,6 @@ def callback(ch, method, properties, body):
         del message['multiplicative_key']
 
     send_survey_to_front_end(message)
-    
-    # TEST: read the public key from the file and test if that works. (THIS SHOULD NOT BE HERE, DELETE THIS TEST)
-    #mul_publickey = LightPHE(
-    #    algorithm_name = "Exponential-ElGamal", key_file= ADDITIVE_KEY_PATH)
-    #add_publickey = LightPHE(
-    #    algorithm_name = "Exponential-ElGamal", key_file= MULTIPLICATIVE_KEY_PATH)
-    
 
 
 def main():
@@ -119,8 +115,6 @@ def main():
     channel.start_consuming()
 
     app.run(port=FLASK_PORT)
-
-
     
 
 if __name__ == '__main__':
