@@ -42,14 +42,14 @@ def send_answer_to_survey_handler(answer: dict):
             if str(message[key][0]) == id_question:
                 if (message[key][1]) == "average":
                     ciphertext = additive_publickey.encrypt(int(answer[id_question]))
-                    encrypted_answers[id_question] = base64.b64encode(
-                        pickle.dumps(ciphertext)).decode('utf-8')
+                    encrypted_answers[id_question] = [base64.b64encode(
+                        pickle.dumps(ciphertext)).decode('utf-8'), "average"]
                 elif (message[key][1] == "multiple choice"):
                     ciphertext = mulplicative_publickey.encrypt(int(answer[id_question]))
-                    encrypted_answers[id_question] = base64.b64encode(
-                        pickle.dumps(ciphertext)).decode('utf-8')
+                    encrypted_answers[id_question] = [base64.b64encode(
+                        pickle.dumps(ciphertext)).decode('utf-8'), "multiple choice"]
                 elif (message[key][1] == "text"):
-                    encrypted_answers[id_question] = answer[id_question]  
+                    encrypted_answers[id_question] = [answer[id_question], "text"]  
                 else:
                     assert False, "This else SHOULD'NT be executed!"
                 break

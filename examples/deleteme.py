@@ -17,12 +17,31 @@ print(type(c1))
 print(type(c1.value))  
 print(c1.value)
 '''
-
+'''
 serialized_ciphertext = pickle.dumps(c1)
 
 serialized_ciphertext_base64 = base64.b64encode(serialized_ciphertext).decode('utf-8')
 
 print(serialized_ciphertext_base64)
+'''
+
+dicio = {'teste': 4456}
+
+try:
+    dicio['o'].append('textoo')
+except KeyError:
+    print('entrou except')
+    dicio['o'] = ['textoo']
+
+try:
+    dicio['o'].append('textoo')
+except KeyError:
+    print('entrou except')
+    dicio['o'] = ['textoo']
+
+#dicio['o'] += 'ola'
+print(dicio)
+
 
 
 #obj = pickle.loads(serialized_ciphertext)
