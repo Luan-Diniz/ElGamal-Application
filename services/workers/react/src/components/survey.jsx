@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 const Survey = () => {
   const [surveyData, setSurveyData] = useState(null);
   const [responses, setResponses] = useState({});
+  const apiPort = import.meta.env.VITE_API_PORT || 5000; // Default to 5000 if not set
 
   useEffect(() => {
     fetchData();
@@ -10,7 +11,8 @@ const Survey = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:5000/answer_form');
+      console.log(`http://localhost:${apiPort}/answer_form`);
+      const response = await fetch(`http://localhost:${apiPort}/answer_form`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -30,7 +32,7 @@ const Survey = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://localhost:5000/answer_form', {
+      const response = await fetch(`http://localhost:${apiPort}/answer_form`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -9,7 +9,7 @@ Antes da primeira execução é necessário:
 npm install
 ```
 
-Para rodar o site na porta _PORT_:
+Para rodar o site na porta _PORT\_REACT_, se comunicando com o Worker no port _PORT\_WORKER_:
 ```shell
-npm run dev PORT
+VITE_API_PORT=PORT_WORKER npm run dev PORT_REACT
 ```
