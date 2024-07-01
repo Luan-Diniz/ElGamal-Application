@@ -11,7 +11,6 @@ const Survey = () => {
 
   const fetchData = async () => {
     try {
-      console.log(`http://localhost:${apiPort}/answer_form`);
       const response = await fetch(`http://localhost:${apiPort}/answer_form`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
