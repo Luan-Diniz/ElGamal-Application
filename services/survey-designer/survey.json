@@ -1,11 +1,31 @@
 {
-   "TextQuestion1" : [1, "average"],
-   "TextQuestion2" : [2, "text"],
-   "TextQuestion3" : [3, "multiple choice" ,
+   "Qual seu salário?" : [1, "average"],
+   "O quão satisfeito você está com o ambiente na empresa?" : [2, "multiple choice" ,
         {
-            "a" : ["ChoiceText1", 3],
-            "b" : ["ChoiceText2", 5],
-            "c" : ["ChoiceText3", 7]
+            "a" : ["Muito satisfeito", 3],
+            "b" : ["Satisfeito", 5],
+            "c" : ["Nem insatisfeito, nem satisfeito", 7],
+            "d" : ["Insatisfeito", 11],
+            "e" : ["Muito insatisfeito", 13]
         }
-    ]
+    ],
+
+    "Você precisa fazer horas extra frequentemente?" : [3, "multiple choice" ,
+        {
+            "a" : ["Sim", 3],
+            "b" : ["Não", 5]
+        }
+    ],
+
+    "O quão bem sua saúde mental está?" : [4, "multiple choice" ,
+        {
+            "a" : ["Muito bem", 3],
+            "b" : ["Bem", 5],
+            "c" : ["Poderia estar melhor", 7],
+            "d" : ["Mal", 11],
+            "e" : ["Muito mal", 13]
+        }
+    ],
+
+    "Alguma observação?" : [5, "text"]
 }

@@ -25,6 +25,7 @@ def get_result():
     # Should shuffle all answers with [str].
     # Should clean the result variable.
     
+    print('Sending results to Survey Designer...')
     serialized_results = {}
     for key in result.keys():
         if type(result[key]) == list:
@@ -44,7 +45,7 @@ def get_result():
 def receive_answer():
     global number_answers
     answer = request.get_json()
-    print(answer)
+    print("Received an answer!")
 
     for key in answer.keys():
         if answer[key][1] == "text":
@@ -78,8 +79,7 @@ def receive_answer():
 def set_survey():
     survey = request.get_json()
     distribute_survey(survey)
-
-    print(survey) # DELETE THIS PRINT, ONLY FOR DEBUGGING!
+    print("Received a survey!")
 
     return make_response(
         jsonify({'status': 'working'})  

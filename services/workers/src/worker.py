@@ -25,6 +25,7 @@ def get_answer():
     
     elif request.method == 'POST':
         answer = request.json
+        print('Sending answer to Survey Handler...')
         send_answer_to_survey_handler(answer)
         return jsonify({'status': 'working'})
         
@@ -72,7 +73,7 @@ def callback(ch, method, properties, body):
 
     channel.stop_consuming()
     message = json.loads(body.decode('utf-8'))  # Returns a dict.
-    print(f"Received message: {message}")
+    print(f"Received a survey to answer!")
     # Store received public keys  (Write the raw dictionary)
     # Note that we delete the public keys from the messages,
     # after writing the files, because it will be send to the front end
@@ -104,7 +105,7 @@ def main():
     channel.queue_bind(exchange='survey', queue=queue_name)
 
     channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
-    print('Waiting for messages')
+    print('Waiting for the survey...')
     channel.start_consuming()
 
     app.run(port=FLASK_PORT)
